@@ -5,7 +5,7 @@ This package implements a two step algorithm that simultaneously estimates clust
 You can install this package from GitHub using the devtools package:
 
 library(devtools)
-devtools::install_github('rachidkha/CCNSVM', build_vignettes = TRUE)
 
+devtools::install_github('rachidkha/CCNSVM', build_vignettes = TRUE)
 The main function is 'ccn' 
 
