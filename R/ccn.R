@@ -1,9 +1,9 @@
 ccn <-
-function(x, y, tom,  KK,  nlambda = 25, method = c("ccnL1", 
+function(x, y, tom=tom,  KK,  nlambda = 25, method = c("ccnL1", 
     "ccnscad", "ccnmcp"), 
                      lambda.factor = ifelse(nobs < nvars, 0.01, 
                                             1e-4), lambda = NULL, lambda2 = 0, pf = rep(1, nvars), pf2 = rep(1, nvars), exclude, 
-                     dfmax = nvars + 1, pmax = min(dfmax * 1.2, nvars), standardize = FALSE, 
+                     dfmax = nvars + 1, pmax = min(dfmax * 1.2, nvars), standardize = TRUE, 
                      eps = 1e-5, maxit = 700, delta = 2) {
   #################################################################################
 
@@ -12,7 +12,6 @@ function(x, y, tom,  KK,  nlambda = 25, method = c("ccnL1",
   y <- drop(y)
   x <- as.matrix(x)
   KK<- as.integer(KK)
-  tom <- as.matrix(tom)
   np <- dim(x)
   nobs <- as.integer(np[1])
   nvars <- as.integer(np[2])
@@ -63,7 +62,21 @@ function(x, y, tom,  KK,  nlambda = 25, method = c("ccnL1",
     nlam <- as.integer(length(lambda))
   }
   #################################################################################
-  fit1 <- switch(method, 
+  if(missing(tom)){
+    fit <- switch(method, 
+                   ccnL1 = ccnclusterpathc(x, y, KK , nlam, flmin, 
+                                            ulam, isd, eps, dfmax, pmax, jd, pf, pf2, maxit, lam2, delta, 
+                                            nobs, nvars, vnames),
+                   ccnscad = ccnscadpathc(x, y, KK,nlam,flmin,ulam,isd,eps, dfmax, pmax, jd, pf, pf2, maxit, lam2, delta, 
+                                                  nobs, nvars, vnames),
+                   ccnmcp = ccnmcppathc(x, y, KK,nlam,flmin,ulam,isd,eps, dfmax, pmax, jd, pf, pf2, maxit, lam2, delta, 
+                                     nobs, nvars, vnames)
+                   
+    )   
+  }  
+ else {  
+   tom <- as.matrix(tom)
+  fit <- switch(method, 
                  ccnL1 = hsvmclusterpathc(x, y, tom,KK , nlam, flmin, 
                                    ulam, isd, eps, dfmax, pmax, jd, pf, pf2, maxit, lam2, delta, 
                                    nobs, nvars, vnames),
@@ -73,12 +86,12 @@ function(x, y, tom,  KK,  nlambda = 25, method = c("ccnL1",
                                  nobs, nvars, vnames)
 	
  ) 
-                 
+ }                
   
   if (is.null(lambda)) 
-    fit1$lambda <- lamfix(fit1$lambda)
-  fit1$call <- this.call
+    fit$lambda <- lamfix(fit$lambda)
+  fit$call <- this.call
   #################################################################################
-  class(fit1) <- c("ccn", class(fit1))
-  fit1
+  class(fit) <- c("ccn", class(fit))
+  fit
 }

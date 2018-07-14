@@ -1,20 +1,20 @@
 getoutput <-
-function(fit1, maxit, pmax, nvars, vnames) {
-  nalam <- fit1$nalam
-  nbeta <- fit1$nbeta[seq(nalam)]
+function(fit, maxit, pmax, nvars, vnames) {
+  nalam <- fit$nalam
+  nbeta <- fit$nbeta[seq(nalam)]
   nbetamax <- max(nbeta)
-  lam <- fit1$alam[seq(nalam)]
+  lam <- fit$alam[seq(nalam)]
   stepnames <- paste("s", seq(nalam) - 1, sep = "")
-  errmsg <- err(fit1$jerr, maxit, pmax)
+  errmsg <- err(fit$jerr, maxit, pmax)
   
   switch(paste(errmsg$n), `1` = stop(errmsg$msg, call. = FALSE), 
          `-1` = print(errmsg$msg, call. = FALSE))
   dd <- c(nvars, nalam)
   if (nbetamax > 0) {
-    beta <- matrix(fit1$beta[seq(pmax * nalam)], pmax, nalam)[seq(nbetamax), 
+    beta <- matrix(fit$beta[seq(pmax * nalam)], pmax, nalam)[seq(nbetamax), 
                                                               , drop = FALSE]
     df <- apply(abs(beta) > 0, 2, sum)
-    ja <- fit1$ibeta[seq(nbetamax)]
+    ja <- fit$ibeta[seq(nbetamax)]
     oja <- order(ja)
     ja <- rep(ja[oja], nalam)
     ibeta <- cumsum(c(1, rep(nbetamax, nalam)))
@@ -27,9 +27,9 @@ function(fit1, maxit, pmax, nvars, vnames) {
     df <- rep(0, nalam)
 
   }
-  cluster<-matrix(fit1$cluster,nvars,nalam)
+  cluster<-matrix(fit$cluster,nvars,nalam)
   ##############nvars,nalam
-  b0 <- fit1$b0
+  b0 <- fit$b0
   if (!is.null(b0)) {
     b0 <- b0[seq(nalam)]
     names(b0) <- stepnames

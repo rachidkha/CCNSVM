@@ -10,7 +10,7 @@ function(x, y, tom,KK , lambda = NULL, pred.loss = c("misclass",
       ccn.object<-ccn(x, y,tom=tom, KK = KK , lambda= lambda,delta=delta, ...)
                                 
          
-    lambda <- gcdclust.object$lambda
+    lambda <- ccn.object$lambda
     # predict -> coef
     nz <- sapply(coef(ccn.object, type = "nonzero"), length)
     if (missing(foldid)) 
@@ -26,8 +26,8 @@ function(x, y, tom,KK , lambda = NULL, pred.loss = c("misclass",
                                   y = y_sub, tom=tom,KK = KK , lambda = lambda,delta=delta, ...)
         
     }
-    ###What to do depends on the pred.loss and the model fit
-    fun <- paste("cv", class(ccn.object)[[2]], sep = ".")
+  
+    fun <- "cv.ccnpathc"
     cvstuff <- do.call(fun, list(outlist, lambda, x, y, foldid, 
         pred.loss, delta))
     cvm <- cvstuff$cvm
