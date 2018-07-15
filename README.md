@@ -7,5 +7,6 @@ You can install this package from GitHub using the devtools package:
 library(devtools)
 
 devtools::install_github('rachidkha/CCNSVM', build_vignettes = TRUE)
-The main function is 'ccn' 
+
+The main function is 'ccn'. 
 
